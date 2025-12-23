@@ -1,0 +1,108 @@
+@startuml
+!theme plain
+skinparam componentStyle rectangle
+skinparam linetype ortho
+title n8n 业务架构图 (Business Architecture)
+
+package "业务能力层 (Business Capabilities)" {
+  component [工作流自动化能力] as WorkflowAutomation
+  component [集成能力] as IntegrationCapability
+  component [数据处理能力] as DataProcessing
+  component [AI/ML能力] as AICapability
+  component [协作能力] as CollaborationCapability
+  component [监控与分析能力] as MonitoringCapability
+}
+
+package "业务流程层 (Business Processes)" {
+  component [工作流设计流程] as DesignProcess
+  component [工作流执行流程] as ExecutionProcess
+  component [凭证管理流程] as CredentialProcess
+  component [用户管理流程] as UserProcess
+  component [错误处理流程] as ErrorProcess
+}
+
+package "业务服务层 (Business Services)" {
+  component [工作流管理服务] as WorkflowService
+  component [执行管理服务] as ExecutionService
+  component [用户管理服务] as UserService
+  component [凭证管理服务] as CredentialService
+  component [节点管理服务] as NodeService
+  component [协作服务] as CollaborationService
+  component [通知服务] as NotificationService
+}
+
+' 关系定义
+WorkflowAutomation --> DesignProcess
+WorkflowAutomation --> ExecutionProcess
+IntegrationCapability --> WorkflowService
+DataProcessing --> ExecutionProcess
+AICapability --> WorkflowService
+CollaborationCapability --> CollaborationService
+MonitoringCapability --> ExecutionService
+
+DesignProcess --> WorkflowService
+ExecutionProcess --> ExecutionService
+CredentialProcess --> CredentialService
+UserProcess --> UserService
+ErrorProcess --> ExecutionService
+
+WorkflowService --> ExecutionService
+ExecutionService --> NotificationService
+CredentialService --> NodeService
+UserService --> WorkflowService
+CollaborationService --> WorkflowService
+
+note right of WorkflowAutomation
+  核心能力：
+  - 可视化工作流设计
+  - 节点编排与连接
+  - 条件分支与循环控制
+  - 错误处理与重试机制
+end note
+
+note right of IntegrationCapability
+  集成能力：
+  - 500+ 预置节点集成
+  - REST API 集成
+  - Webhook 支持
+  - OAuth 认证集成
+  - 自定义节点开发
+end note
+
+note right of DataProcessing
+  数据处理：
+  - 数据转换与映射
+  - 数据验证与清洗
+  - 批量数据处理
+  - 实时数据流处理
+end note
+
+note right of AICapability
+  AI能力：
+  - LangChain 集成
+  - AI 工作流构建
+  - 智能节点推荐
+  - 自然语言处理
+end note
+
+note right of DesignProcess
+  设计流程：
+  1. 创建工作流
+  2. 添加和配置节点
+  3. 连接节点建立数据流
+  4. 设置触发条件
+  5. 测试与验证
+  6. 激活工作流
+end note
+
+note right of ExecutionProcess
+  执行流程：
+  1. 触发事件接收
+  2. 工作流实例化
+  3. 节点顺序执行
+  4. 数据传递与转换
+  5. 结果存储
+  6. 通知与响应
+end note
+
+@enduml

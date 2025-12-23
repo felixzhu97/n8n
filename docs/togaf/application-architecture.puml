@@ -1,0 +1,133 @@
+@startuml
+!theme plain
+skinparam componentStyle rectangle
+skinparam linetype ortho
+title n8n 应用架构图 (Application Architecture)
+
+package "前端应用层 (Frontend Applications)" {
+  component [Editor UI] as EditorUI
+  component [Design System] as DesignSystem
+  component [i18n] as I18n
+}
+
+package "后端应用层 (Backend Applications)" {
+  component [CLI Server] as CLIServer
+  component [REST API] as RESTAPI
+  component [WebSocket Server] as WebSocketServer
+  component [Webhook Server] as WebhookServer
+  component [Public API] as PublicAPI
+}
+
+package "核心引擎层 (Core Engine)" {
+  component [Workflow Engine] as WorkflowEngine
+  component [Execution Engine] as ExecutionEngine
+  component [Node Execution] as NodeExecution
+  component [Routing Node] as RoutingNode
+  component [Triggers & Pollers] as TriggersPollers
+}
+
+package "节点系统层 (Node System)" {
+  component [Nodes Base] as NodesBase
+  component [LangChain Nodes] as LangChainNodes
+  component [Community Nodes] as CommunityNodes
+  component [Node Registry] as NodeRegistry
+}
+
+package "应用服务层 (Application Services)" {
+  component [Workflow Service] as WorkflowService
+  component [Execution Service] as ExecutionService
+  component [Credential Service] as CredentialService
+  component [User Service] as UserService
+  component [Collaboration Service] as CollaborationService
+  component [Chat Hub Service] as ChatHubService
+  component [Scaling Service] as ScalingService
+}
+
+package "数据访问层 (Data Access Layer)" {
+  component [Repository Layer] as RepositoryLayer
+  database [Database] as Database
+}
+
+' 关系定义
+EditorUI --> RESTAPI
+EditorUI --> WebSocketServer
+DesignSystem --> EditorUI
+I18n --> EditorUI
+
+CLIServer --> RESTAPI
+CLIServer --> WebSocketServer
+CLIServer --> WebhookServer
+CLIServer --> PublicAPI
+
+RESTAPI --> WorkflowService
+RESTAPI --> ExecutionService
+RESTAPI --> CredentialService
+RESTAPI --> UserService
+RESTAPI --> CollaborationService
+
+WebhookServer --> WorkflowEngine
+WebSocketServer --> CollaborationService
+
+WorkflowEngine --> ExecutionEngine
+ExecutionEngine --> NodeExecution
+ExecutionEngine --> RoutingNode
+ExecutionEngine --> TriggersPollers
+
+NodeExecution --> NodesBase
+NodeExecution --> LangChainNodes
+NodeExecution --> CommunityNodes
+NodeRegistry --> NodesBase
+NodeRegistry --> LangChainNodes
+NodeRegistry --> CommunityNodes
+
+WorkflowService --> RepositoryLayer
+ExecutionService --> RepositoryLayer
+CredentialService --> RepositoryLayer
+UserService --> RepositoryLayer
+CollaborationService --> RepositoryLayer
+ChatHubService --> RepositoryLayer
+
+RepositoryLayer --> Database
+
+ExecutionService --> ScalingService
+ScalingService --> WorkflowEngine
+
+note right of EditorUI
+  技术栈：
+  - Vue 3 + TypeScript
+  - Vite 构建工具
+  - Pinia 状态管理
+  - CodeMirror 代码编辑器
+  - Element Plus UI组件库
+end note
+
+note right of CLIServer
+  核心服务：
+  - Express HTTP服务器
+  - REST API端点
+  - WebSocket服务器
+  - 中间件处理
+  - 路由管理
+end note
+
+note right of WorkflowEngine
+  工作流引擎：
+  - 工作流解析
+  - 节点执行调度
+  - 数据流转管理
+  - 执行上下文管理
+  - 错误处理
+  - 重试机制
+end note
+
+note right of NodesBase
+  基础节点：
+  - 500+ 预置节点
+  - HTTP节点
+  - 数据库节点
+  - 文件操作节点
+  - 数据转换节点
+  - 逻辑控制节点
+end note
+
+@enduml

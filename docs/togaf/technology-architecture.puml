@@ -1,0 +1,152 @@
+@startuml
+!theme plain
+skinparam componentStyle rectangle
+skinparam nodeStyle rectangle
+skinparam linetype ortho
+title n8n 技术架构图 (Technology Architecture)
+
+package "运行时环境 (Runtime Environment)" {
+  node [Node.js Runtime] as NodeJS
+  component [TypeScript] as TypeScript
+}
+
+package "Web框架层 (Web Framework Layer)" {
+  component [Express] as Express
+  component [中间件] as Middleware
+  component [WebSocket] as WebSocket
+}
+
+package "数据持久化层 (Data Persistence Layer)" {
+  component [TypeORM] as TypeORM
+  database [SQLite] as SQLite
+  database [PostgreSQL] as PostgreSQL
+  database [MySQL] as MySQL
+}
+
+package "缓存与队列层 (Cache & Queue Layer)" {
+  database [Redis] as Redis
+  component [Bull Queue] as BullQueue
+  component [Cache Manager] as CacheManager
+}
+
+package "认证与安全层 (Authentication & Security)" {
+  component [JWT] as JWT
+  component [OAuth] as OAuth
+  component [密码加密] as PasswordEncryption
+  component [MFA] as MFA
+  component [SAML] as SAML
+}
+
+package "构建与工具链 (Build & Toolchain)" {
+  component [pnpm] as pnpm
+  component [Turbo] as Turbo
+  component [TypeScript Compiler] as TSC
+  component [Vite] as Vite
+  component [Biome] as Biome
+  component [ESLint] as ESLint
+}
+
+package "测试框架 (Testing Framework)" {
+  component [Jest] as Jest
+  component [Vitest] as Vitest
+  component [Playwright] as Playwright
+  component [Nock] as Nock
+}
+
+package "监控与可观测性 (Monitoring & Observability)" {
+  component [Prometheus] as Prometheus
+  component [Sentry] as Sentry
+  component [PostHog] as PostHog
+  component [日志系统] as Logging
+}
+
+package "部署架构 (Deployment Architecture)" {
+  node [Docker容器] as Docker
+  node [单机部署] as Standalone
+  node [队列模式] as QueueMode
+  node [任务运行器] as TaskRunner
+}
+
+' 关系定义
+NodeJS --> TypeScript
+TypeScript --> Express
+Express --> Middleware
+Express --> WebSocket
+
+Express --> TypeORM
+TypeORM --> SQLite
+TypeORM --> PostgreSQL
+TypeORM --> MySQL
+
+Express --> Redis
+BullQueue --> Redis
+CacheManager --> Redis
+
+Express --> JWT
+Express --> OAuth
+Express --> PasswordEncryption
+Express --> MFA
+Express --> SAML
+
+pnpm --> Turbo
+Turbo --> TSC
+Turbo --> Vite
+Biome --> TypeScript
+ESLint --> TypeScript
+
+Jest --> TypeScript
+Vitest --> Vite
+Playwright --> Express
+
+Express --> Prometheus
+Express --> Sentry
+Express --> PostHog
+Express --> Logging
+
+Docker --> Standalone
+Docker --> QueueMode
+Docker --> TaskRunner
+
+QueueMode --> BullQueue
+TaskRunner --> NodeJS
+
+note right of NodeJS
+  Node.js版本：
+  >= 20.19, <= 24.x
+  V8引擎
+  事件驱动架构
+end note
+
+note right of Express
+  Express框架：
+  HTTP服务器
+  路由管理
+  中间件支持
+  版本：5.1.0
+end note
+
+note right of TypeORM
+  TypeORM：
+  对象关系映射
+  实体定义
+  查询构建器
+  迁移管理
+end note
+
+note right of Redis
+  Redis：
+  ioredis (5.3.2)
+  缓存存储
+  会话管理
+  分布式锁
+end note
+
+note right of BullQueue
+  Bull队列：
+  bull (4.16.4)
+  基于Redis
+  任务队列
+  延迟任务
+end note
+
+@enduml

@@ -1,0 +1,108 @@
+@startuml
+!theme plain
+skinparam componentStyle rectangle
+skinparam nodeStyle rectangle
+skinparam linetype ortho
+title n8n 总体架构图 (Overall Architecture) - TOGAF视图整合
+
+package "业务架构层 (Business Architecture)" {
+  component [业务能力] as BusinessCapabilities
+  component [业务流程] as BusinessProcesses
+  component [业务服务] as BusinessServices
+}
+
+package "应用架构层 (Application Architecture)" {
+  component [前端应用] as FrontendApps
+  component [后端应用] as BackendApps
+  component [核心引擎] as CoreEngine
+  component [节点系统] as NodeSystem
+  component [应用服务] as ApplicationServices
+}
+
+package "数据架构层 (Data Architecture)" {
+  component [数据模型] as DataModels
+  component [数据流] as DataFlow
+  component [数据访问] as DataAccess
+  database [数据存储] as DataStorage
+}
+
+package "技术架构层 (Technology Architecture)" {
+  node [运行时] as Runtime
+  component [Web框架] as WebFramework
+  component [数据持久化] as DataPersistence
+  component [缓存队列] as CacheQueue
+  component [认证安全] as AuthSecurity
+  component [构建工具] as BuildTools
+  component [测试框架] as Testing
+  component [监控可观测] as Monitoring
+  node [部署架构] as Deployment
+}
+
+package "外部接口 (External Interfaces)" {
+  actor [最终用户] as EndUser
+  actor [API客户端] as APIClient
+  actor [Webhook调用者] as WebhookCaller
+  actor [第三方服务] as ThirdPartyServices
+}
+
+' 层次关系
+BusinessCapabilities --> BusinessProcesses
+BusinessProcesses --> BusinessServices
+BusinessServices --> ApplicationServices
+
+FrontendApps --> BackendApps
+BackendApps --> CoreEngine
+CoreEngine --> NodeSystem
+ApplicationServices --> DataAccess
+
+DataModels --> DataFlow
+DataFlow --> DataAccess
+DataAccess --> DataStorage
+
+Runtime --> WebFramework
+WebFramework --> DataPersistence
+WebFramework --> CacheQueue
+WebFramework --> AuthSecurity
+BuildTools --> Runtime
+Testing --> Runtime
+Monitoring --> Runtime
+Deployment --> Runtime
+
+' 外部交互
+EndUser --> FrontendApps
+APIClient --> BackendApps
+WebhookCaller --> BackendApps
+ThirdPartyServices --> NodeSystem
+
+' 跨层关系
+BusinessServices ..> ApplicationServices
+ApplicationServices ..> DataModels
+DataAccess ..> DataPersistence
+WebFramework ..> Runtime
+Deployment ..> Runtime
+
+note right of BusinessServices
+  业务服务层定义了
+  系统的业务功能
+  和业务规则
+end note
+
+note right of ApplicationServices
+  应用服务层实现了
+  具体的业务逻辑
+  和技术实现
+end note
+
+note right of DataAccess
+  数据访问层提供了
+  统一的数据访问
+  接口和抽象
+end note
+
+note right of Runtime
+  技术架构层提供了
+  运行环境和基础
+  技术能力
+end note
+
+@enduml
