@@ -4,7 +4,13 @@
 
 ## 文件说明
 
-### 1. business-architecture.puml
+### 语言版本
+
+所有架构图提供中文和英文两个版本：
+- **中文版本**：`*-architecture.puml`（如 `business-architecture.puml`）
+- **英文版本**：`*-architecture-en.puml`（如 `business-architecture-en.puml`）
+
+### 1. business-architecture.puml / business-architecture-en.puml
 **业务架构图** - 描述n8n的业务能力、业务流程和业务服务
 
 包含：
@@ -12,7 +18,7 @@
 - **业务流程视图**：工作流设计流程、执行流程、凭证管理流程、用户管理流程、错误处理流程
 - **业务服务视图**：工作流管理服务、执行管理服务、用户管理服务、凭证管理服务、节点管理服务、协作服务、通知服务
 
-### 2. application-architecture.puml
+### 2. application-architecture.puml / application-architecture-en.puml
 **应用架构图** - 描述n8n的应用组件、应用交互和应用服务
 
 包含：
@@ -23,7 +29,7 @@
 - **应用服务层**：各种业务服务实现
 - **数据访问层**：Repository Pattern、TypeORM
 
-### 3. data-architecture.puml
+### 3. data-architecture.puml / data-architecture-en.puml
 **数据架构图** - 描述n8n的数据模型、数据流和数据存储
 
 包含：
@@ -33,7 +39,7 @@
 - **数据存储视图**：SQLite/PostgreSQL/MySQL、Redis缓存、文件存储
 - **数据访问层**：TypeORM、Repository Pattern
 
-### 4. technology-architecture.puml
+### 4. technology-architecture.puml / technology-architecture-en.puml
 **技术架构图** - 描述n8n的技术组件、部署架构和技术平台
 
 包含：
@@ -47,7 +53,7 @@
 - **监控与可观测性**：Prometheus、Sentry、PostHog、日志系统
 - **部署架构**：Docker容器、单机部署、队列模式、任务运行器
 
-### 5. overall-architecture.puml
+### 5. overall-architecture.puml / overall-architecture-en.puml
 **总体架构图** - 整合所有TOGAF视图的架构全景
 
 展示：

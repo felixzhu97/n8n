@@ -1,0 +1,172 @@
+@startuml
+!theme plain
+skinparam componentStyle rectangle
+skinparam linetype ortho
+title n8n Data Architecture
+
+package "Core Data Models" {
+  component [WorkflowEntity] as WorkflowEntity
+  component [ExecutionEntity] as ExecutionEntity
+  component [ExecutionData] as ExecutionData
+  component [CredentialsEntity] as CredentialsEntity
+  component [User] as User
+  component [Project] as Project
+  component [Folder] as Folder
+  component [TagEntity] as TagEntity
+}
+
+package "Related Data Models" {
+  component [SharedWorkflow] as SharedWorkflow
+  component [SharedCredentials] as SharedCredentials
+  component [WorkflowHistory] as WorkflowHistory
+  component [WebhookEntity] as WebhookEntity
+  component [BinaryDataFile] as BinaryDataFile
+}
+
+package "Data Flow View" {
+  component [Workflow Design Data Flow] as DesignFlow
+  component [Workflow Execution Data Flow] as ExecutionFlow
+  component [Credential Data Flow] as CredentialFlow
+  component [Binary Data Flow] as BinaryFlow
+}
+
+package "Data Storage View" {
+  database [SQLite] as SQLite
+  database [PostgreSQL] as PostgreSQL
+  database [MySQL] as MySQL
+  database [Redis] as Redis
+  component [File Storage] as FileStorage
+}
+
+package "Data Access Layer" {
+  component [TypeORM] as TypeORM
+  component [Repository Pattern] as Repository
+}
+
+' Relationship Definitions
+WorkflowEntity --> ExecutionEntity
+WorkflowEntity --> WorkflowHistory
+WorkflowEntity --> SharedWorkflow
+WorkflowEntity --> TagEntity
+
+ExecutionEntity --> ExecutionData
+
+CredentialsEntity --> SharedCredentials
+
+User --> SharedWorkflow
+User --> SharedCredentials
+User --> Project
+
+Project --> WorkflowEntity
+Folder --> WorkflowEntity
+
+DesignFlow --> WorkflowEntity
+ExecutionFlow --> WorkflowEntity
+ExecutionFlow --> ExecutionEntity
+ExecutionFlow --> ExecutionData
+CredentialFlow --> CredentialsEntity
+BinaryFlow --> BinaryDataFile
+
+TypeORM --> SQLite
+TypeORM --> PostgreSQL
+TypeORM --> MySQL
+Repository --> TypeORM
+
+WorkflowEntity --> SQLite
+WorkflowEntity --> PostgreSQL
+ExecutionEntity --> SQLite
+ExecutionEntity --> PostgreSQL
+CredentialsEntity --> SQLite
+CredentialsEntity --> PostgreSQL
+BinaryDataFile --> FileStorage
+
+ExecutionFlow --> Redis
+CredentialFlow --> Redis
+
+note right of WorkflowEntity
+  Workflow Entity:
+  - id: string
+  - name: string
+  - description: string
+  - active: boolean
+  - nodes: INode[]
+  - connections: IConnections
+  - versionId: string
+  Stores complete workflow definition
+end note
+
+note right of ExecutionEntity
+  Execution Entity:
+  - id: string
+  - workflowId: string
+  - mode: string
+  - startedAt: Date
+  - stoppedAt: Date
+  - finished: boolean
+  Stores workflow execution history
+end note
+
+note right of ExecutionData
+  Execution Data Entity:
+  - executionId: string
+  - workflowData: string
+  - data: string
+  Stores detailed execution data
+end note
+
+note right of CredentialsEntity
+  Credentials Entity:
+  - id: string
+  - name: string
+  - type: string
+  - data: string (encrypted)
+  Encrypted storage of authentication credentials
+end note
+
+note right of User
+  User Entity:
+  - id: string (UUID)
+  - email: string
+  - firstName: string
+  - lastName: string
+  - role: Role
+  Stores user account information
+end note
+
+note right of DesignFlow
+  Design Phase Data Flow:
+  1. User designs workflow in Editor UI
+  2. Frontend saves workflow via REST API
+  3. WorkflowEntity stored to database
+  4. Workflow version info recorded to WorkflowHistory
+end note
+
+note right of ExecutionFlow
+  Execution Phase Data Flow:
+  1. Trigger event arrives
+  2. Load WorkflowEntity from database
+  3. Create workflow execution instance
+  4. Node execution produces data
+  5. ExecutionEntity records execution status
+  6. ExecutionData stores execution data
+end note
+
+note right of CredentialFlow
+  Credential Data Flow:
+  1. User creates credential
+  2. Credential data encryption
+  3. CredentialsEntity stores encrypted data
+  4. Credential decryption during execution
+  5. Credential passed to nodes for use
+end note
+
+note right of BinaryFlow
+  Binary Data Flow:
+  1. Node produces binary data
+  2. Data stored to BinaryDataFile
+  3. Return file reference
+  4. Read from storage when needed
+end note
+
+@enduml
+

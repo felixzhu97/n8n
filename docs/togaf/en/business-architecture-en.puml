@@ -1,0 +1,109 @@
+@startuml
+!theme plain
+skinparam componentStyle rectangle
+skinparam linetype ortho
+title n8n Business Architecture
+
+package "Business Capabilities Layer" {
+  component [Workflow Automation Capability] as WorkflowAutomation
+  component [Integration Capability] as IntegrationCapability
+  component [Data Processing Capability] as DataProcessing
+  component [AI/ML Capability] as AICapability
+  component [Collaboration Capability] as CollaborationCapability
+  component [Monitoring & Analytics Capability] as MonitoringCapability
+}
+
+package "Business Processes Layer" {
+  component [Workflow Design Process] as DesignProcess
+  component [Workflow Execution Process] as ExecutionProcess
+  component [Credential Management Process] as CredentialProcess
+  component [User Management Process] as UserProcess
+  component [Error Handling Process] as ErrorProcess
+}
+
+package "Business Services Layer" {
+  component [Workflow Management Service] as WorkflowService
+  component [Execution Management Service] as ExecutionService
+  component [User Management Service] as UserService
+  component [Credential Management Service] as CredentialService
+  component [Node Management Service] as NodeService
+  component [Collaboration Service] as CollaborationService
+  component [Notification Service] as NotificationService
+}
+
+' Relationship Definitions
+WorkflowAutomation --> DesignProcess
+WorkflowAutomation --> ExecutionProcess
+IntegrationCapability --> WorkflowService
+DataProcessing --> ExecutionProcess
+AICapability --> WorkflowService
+CollaborationCapability --> CollaborationService
+MonitoringCapability --> ExecutionService
+
+DesignProcess --> WorkflowService
+ExecutionProcess --> ExecutionService
+CredentialProcess --> CredentialService
+UserProcess --> UserService
+ErrorProcess --> ExecutionService
+
+WorkflowService --> ExecutionService
+ExecutionService --> NotificationService
+CredentialService --> NodeService
+UserService --> WorkflowService
+CollaborationService --> WorkflowService
+
+note right of WorkflowAutomation
+  Core Capabilities:
+  - Visual workflow design
+  - Node orchestration and connection
+  - Conditional branching and loop control
+  - Error handling and retry mechanisms
+end note
+
+note right of IntegrationCapability
+  Integration Capabilities:
+  - 500+ pre-built node integrations
+  - REST API integration
+  - Webhook support
+  - OAuth authentication integration
+  - Custom node development
+end note
+
+note right of DataProcessing
+  Data Processing:
+  - Data transformation and mapping
+  - Data validation and cleaning
+  - Batch data processing
+  - Real-time data stream processing
+end note
+
+note right of AICapability
+  AI Capabilities:
+  - LangChain integration
+  - AI workflow construction
+  - Intelligent node recommendations
+  - Natural language processing
+end note
+
+note right of DesignProcess
+  Design Process:
+  1. Create workflow
+  2. Add and configure nodes
+  3. Connect nodes to establish data flow
+  4. Set trigger conditions
+  5. Test and validate
+  6. Activate workflow
+end note
+
+note right of ExecutionProcess
+  Execution Process:
+  1. Receive trigger event
+  2. Instantiate workflow
+  3. Execute nodes sequentially
+  4. Data transfer and transformation
+  5. Store results
+  6. Notification and response
+end note
+
+@enduml
+

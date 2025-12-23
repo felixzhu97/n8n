@@ -1,0 +1,153 @@
+@startuml
+!theme plain
+skinparam componentStyle rectangle
+skinparam nodeStyle rectangle
+skinparam linetype ortho
+title n8n Technology Architecture
+
+package "Runtime Environment" {
+  node [Node.js Runtime] as NodeJS
+  component [TypeScript] as TypeScript
+}
+
+package "Web Framework Layer" {
+  component [Express] as Express
+  component [Middleware] as Middleware
+  component [WebSocket] as WebSocket
+}
+
+package "Data Persistence Layer" {
+  component [TypeORM] as TypeORM
+  database [SQLite] as SQLite
+  database [PostgreSQL] as PostgreSQL
+  database [MySQL] as MySQL
+}
+
+package "Cache & Queue Layer" {
+  database [Redis] as Redis
+  component [Bull Queue] as BullQueue
+  component [Cache Manager] as CacheManager
+}
+
+package "Authentication & Security Layer" {
+  component [JWT] as JWT
+  component [OAuth] as OAuth
+  component [Password Encryption] as PasswordEncryption
+  component [MFA] as MFA
+  component [SAML] as SAML
+}
+
+package "Build & Toolchain" {
+  component [pnpm] as pnpm
+  component [Turbo] as Turbo
+  component [TypeScript Compiler] as TSC
+  component [Vite] as Vite
+  component [Biome] as Biome
+  component [ESLint] as ESLint
+}
+
+package "Testing Framework" {
+  component [Jest] as Jest
+  component [Vitest] as Vitest
+  component [Playwright] as Playwright
+  component [Nock] as Nock
+}
+
+package "Monitoring & Observability" {
+  component [Prometheus] as Prometheus
+  component [Sentry] as Sentry
+  component [PostHog] as PostHog
+  component [Logging System] as Logging
+}
+
+package "Deployment Architecture" {
+  node [Docker Container] as Docker
+  node [Standalone Deployment] as Standalone
+  node [Queue Mode] as QueueMode
+  node [Task Runner] as TaskRunner
+}
+
+' Relationship Definitions
+NodeJS --> TypeScript
+TypeScript --> Express
+Express --> Middleware
+Express --> WebSocket
+
+Express --> TypeORM
+TypeORM --> SQLite
+TypeORM --> PostgreSQL
+TypeORM --> MySQL
+
+Express --> Redis
+BullQueue --> Redis
+CacheManager --> Redis
+
+Express --> JWT
+Express --> OAuth
+Express --> PasswordEncryption
+Express --> MFA
+Express --> SAML
+
+pnpm --> Turbo
+Turbo --> TSC
+Turbo --> Vite
+Biome --> TypeScript
+ESLint --> TypeScript
+
+Jest --> TypeScript
+Vitest --> Vite
+Playwright --> Express
+
+Express --> Prometheus
+Express --> Sentry
+Express --> PostHog
+Express --> Logging
+
+Docker --> Standalone
+Docker --> QueueMode
+Docker --> TaskRunner
+
+QueueMode --> BullQueue
+TaskRunner --> NodeJS
+
+note right of NodeJS
+  Node.js Version:
+  >= 20.19, <= 24.x
+  V8 Engine
+  Event-driven architecture
+end note
+
+note right of Express
+  Express Framework:
+  HTTP server
+  Route management
+  Middleware support
+  Version: 5.1.0
+end note
+
+note right of TypeORM
+  TypeORM:
+  Object-relational mapping
+  Entity definitions
+  Query builder
+  Migration management
+end note
+
+note right of Redis
+  Redis:
+  ioredis (5.3.2)
+  Cache storage
+  Session management
+  Distributed locking
+end note
+
+note right of BullQueue
+  Bull Queue:
+  bull (4.16.4)
+  Redis-based
+  Task queue
+  Delayed tasks
+end note
+
+@enduml
+

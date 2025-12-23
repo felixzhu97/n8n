@@ -1,0 +1,109 @@
+@startuml
+!theme plain
+skinparam componentStyle rectangle
+skinparam nodeStyle rectangle
+skinparam linetype ortho
+title n8n Overall Architecture - TOGAF Views Integration
+
+package "Business Architecture Layer" {
+  component [Business Capabilities] as BusinessCapabilities
+  component [Business Processes] as BusinessProcesses
+  component [Business Services] as BusinessServices
+}
+
+package "Application Architecture Layer" {
+  component [Frontend Applications] as FrontendApps
+  component [Backend Applications] as BackendApps
+  component [Core Engine] as CoreEngine
+  component [Node System] as NodeSystem
+  component [Application Services] as ApplicationServices
+}
+
+package "Data Architecture Layer" {
+  component [Data Models] as DataModels
+  component [Data Flow] as DataFlow
+  component [Data Access] as DataAccess
+  database [Data Storage] as DataStorage
+}
+
+package "Technology Architecture Layer" {
+  node [Runtime] as Runtime
+  component [Web Framework] as WebFramework
+  component [Data Persistence] as DataPersistence
+  component [Cache & Queue] as CacheQueue
+  component [Authentication & Security] as AuthSecurity
+  component [Build Tools] as BuildTools
+  component [Testing Framework] as Testing
+  component [Monitoring & Observability] as Monitoring
+  node [Deployment Architecture] as Deployment
+}
+
+package "External Interfaces" {
+  actor [End User] as EndUser
+  actor [API Client] as APIClient
+  actor [Webhook Caller] as WebhookCaller
+  actor [Third Party Services] as ThirdPartyServices
+}
+
+' Layer Relationships
+BusinessCapabilities --> BusinessProcesses
+BusinessProcesses --> BusinessServices
+BusinessServices --> ApplicationServices
+
+FrontendApps --> BackendApps
+BackendApps --> CoreEngine
+CoreEngine --> NodeSystem
+ApplicationServices --> DataAccess
+
+DataModels --> DataFlow
+DataFlow --> DataAccess
+DataAccess --> DataStorage
+
+Runtime --> WebFramework
+WebFramework --> DataPersistence
+WebFramework --> CacheQueue
+WebFramework --> AuthSecurity
+BuildTools --> Runtime
+Testing --> Runtime
+Monitoring --> Runtime
+Deployment --> Runtime
+
+' External Interactions
+EndUser --> FrontendApps
+APIClient --> BackendApps
+WebhookCaller --> BackendApps
+ThirdPartyServices --> NodeSystem
+
+' Cross-layer Relationships
+BusinessServices ..> ApplicationServices
+ApplicationServices ..> DataModels
+DataAccess ..> DataPersistence
+WebFramework ..> Runtime
+Deployment ..> Runtime
+
+note right of BusinessServices
+  Business Services Layer defines
+  system business functions
+  and business rules
+end note
+
+note right of ApplicationServices
+  Application Services Layer implements
+  specific business logic
+  and technical implementation
+end note
+
+note right of DataAccess
+  Data Access Layer provides
+  unified data access
+  interfaces and abstractions
+end note
+
+note right of Runtime
+  Technology Architecture Layer provides
+  runtime environment and basic
+  technical capabilities
+end note
+
+@enduml
+

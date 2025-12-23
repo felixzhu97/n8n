@@ -1,0 +1,134 @@
+@startuml
+!theme plain
+skinparam componentStyle rectangle
+skinparam linetype ortho
+title n8n Application Architecture
+
+package "Frontend Applications Layer" {
+  component [Editor UI] as EditorUI
+  component [Design System] as DesignSystem
+  component [i18n] as I18n
+}
+
+package "Backend Applications Layer" {
+  component [CLI Server] as CLIServer
+  component [REST API] as RESTAPI
+  component [WebSocket Server] as WebSocketServer
+  component [Webhook Server] as WebhookServer
+  component [Public API] as PublicAPI
+}
+
+package "Core Engine Layer" {
+  component [Workflow Engine] as WorkflowEngine
+  component [Execution Engine] as ExecutionEngine
+  component [Node Execution] as NodeExecution
+  component [Routing Node] as RoutingNode
+  component [Triggers & Pollers] as TriggersPollers
+}
+
+package "Node System Layer" {
+  component [Nodes Base] as NodesBase
+  component [LangChain Nodes] as LangChainNodes
+  component [Community Nodes] as CommunityNodes
+  component [Node Registry] as NodeRegistry
+}
+
+package "Application Services Layer" {
+  component [Workflow Service] as WorkflowService
+  component [Execution Service] as ExecutionService
+  component [Credential Service] as CredentialService
+  component [User Service] as UserService
+  component [Collaboration Service] as CollaborationService
+  component [Chat Hub Service] as ChatHubService
+  component [Scaling Service] as ScalingService
+}
+
+package "Data Access Layer" {
+  component [Repository Layer] as RepositoryLayer
+  database [Database] as Database
+}
+
+' Relationship Definitions
+EditorUI --> RESTAPI
+EditorUI --> WebSocketServer
+DesignSystem --> EditorUI
+I18n --> EditorUI
+
+CLIServer --> RESTAPI
+CLIServer --> WebSocketServer
+CLIServer --> WebhookServer
+CLIServer --> PublicAPI
+
+RESTAPI --> WorkflowService
+RESTAPI --> ExecutionService
+RESTAPI --> CredentialService
+RESTAPI --> UserService
+RESTAPI --> CollaborationService
+
+WebhookServer --> WorkflowEngine
+WebSocketServer --> CollaborationService
+
+WorkflowEngine --> ExecutionEngine
+ExecutionEngine --> NodeExecution
+ExecutionEngine --> RoutingNode
+ExecutionEngine --> TriggersPollers
+
+NodeExecution --> NodesBase
+NodeExecution --> LangChainNodes
+NodeExecution --> CommunityNodes
+NodeRegistry --> NodesBase
+NodeRegistry --> LangChainNodes
+NodeRegistry --> CommunityNodes
+
+WorkflowService --> RepositoryLayer
+ExecutionService --> RepositoryLayer
+CredentialService --> RepositoryLayer
+UserService --> RepositoryLayer
+CollaborationService --> RepositoryLayer
+ChatHubService --> RepositoryLayer
+
+RepositoryLayer --> Database
+
+ExecutionService --> ScalingService
+ScalingService --> WorkflowEngine
+
+note right of EditorUI
+  Technology Stack:
+  - Vue 3 + TypeScript
+  - Vite build tool
+  - Pinia state management
+  - CodeMirror code editor
+  - Element Plus UI component library
+end note
+
+note right of CLIServer
+  Core Services:
+  - Express HTTP server
+  - REST API endpoints
+  - WebSocket server
+  - Middleware processing
+  - Route management
+end note
+
+note right of WorkflowEngine
+  Workflow Engine:
+  - Workflow parsing
+  - Node execution scheduling
+  - Data flow management
+  - Execution context management
+  - Error handling
+  - Retry mechanisms
+end note
+
+note right of NodesBase
+  Base Nodes:
+  - 500+ pre-built nodes
+  - HTTP nodes
+  - Database nodes
+  - File operation nodes
+  - Data transformation nodes
+  - Logic control nodes
+end note
+
+@enduml
+
